@@ -5,7 +5,7 @@
     "url": "https://github.com/mformihir/todo-cli"
   },
   "engines": {
-    "node": "12.16.1"
+    "node": ">=12.16.1"
   },
   "description": "Simple. Minimal. To-Do CLI.",
   "main": "index.js",

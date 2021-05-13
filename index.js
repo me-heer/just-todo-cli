@@ -87,7 +87,7 @@ const taskQuestions = [
   {
     type: "text",
     name: "title",
-    message: "Task: ",
+    message: "Task Title: ",
   },
 ]
 
@@ -103,116 +103,126 @@ program
   .option("-c, --clear", "Clear all tasks")
   .addHelpCommand("help", "show assistance")
   .action((task, options) => {
-    if (task) {
-      addTask({ title: task.toString(), is_completed: false })
-    } else if (options.add) {
-      prompts(taskQuestions).then((response) => {
-        addTask({ title: response.title, is_completed: false })
-      })
-    } else if (options.find) {
-      findTask(options.find)
-    } else if (options.update) {
-      Tasks.find({}).exec(function (err, tasks) {
-        if (err) {
-          console.log(err)
-        }
+    switch (true) {
+      case task != undefined:
+        addTask({ title: task.toString(), is_completed: false })
+        break
 
-        let taskPrompts = []
-        tasks.forEach((task) => {
-          const taskPrompt = {
-            title: task.title,
-          }
-          taskPrompts.push(taskPrompt)
+      case options.add:
+        prompts(taskQuestions).then((response) => {
+          addTask({ title: response.title, is_completed: false })
         })
+        break
+      case options.find:
+        findTask(options.find)
+        break
+      case options.update:
+        Tasks.find({}).exec(function (err, tasks) {
+          if (err) {
+            console.log(err)
+          }
 
-        prompts(
-          {
-            type: "select",
-            name: "task",
-            message: "Choose a task to update:",
-            choices: taskPrompts,
-          },
-          { onCancel: () => {} }
-        ).then((selectResponse) => {
-          if (selectResponse) {
-            // prompt for Task Title
-            prompts(taskQuestions).then((renameResponse) => {
-              updateTask(tasks[selectResponse.task]._id, {
-                title: renameResponse.title,
-                is_completed: tasks[selectResponse.task].is_completed,
-              })
-            })
-          }
-        })
-      })
-    } else if (options.remove) {
-      Tasks.find({}).exec(function (err, tasks) {
-        if (err) {
-          console.log(err)
-        }
-
-        let taskPrompts = []
-        tasks.forEach((task) => {
-          const taskPrompt = {
-            title: task.title,
-          }
-          taskPrompts.push(taskPrompt)
-        })
-
-        prompts(
-          {
-            type: "select",
-            name: "task",
-            message: "Choose a task to remove:",
-            choices: taskPrompts,
-          },
-          { onCancel: () => {} }
-        ).then((selectResponse) => {
-          if (selectResponse) {
-            // prompt for Task Title
-            removeTask(tasks[selectResponse.task]._id)
-          }
-        })
-      })
-    } else if (options.clear) {
-      clearTasks()
-    } else if (options.list) {
-      listTasks()
-    } else {
-      Tasks.find({}).exec(function (err, tasks) {
-        if (err) {
-          console.log(err)
-        }
-        let taskPrompts = []
-        tasks.forEach((task) => {
-          const taskPrompt = {
-            title: task.title,
-            selected: task.is_completed,
-          }
-          taskPrompts.push(taskPrompt)
-        })
-
-        prompts(
-          {
-            type: "multiselect",
-            name: "tasks",
-            message: "Done:",
-            choices: taskPrompts,
-          },
-          { onCancel: () => {} }
-        ).then((response) => {
-          if (response.tasks) {
-            for (let index = 0; index < tasks.length; index++) {
-              if (response.tasks.includes(index)) {
-                tasks[index].is_completed = true
-              } else {
-                tasks[index].is_completed = false
-              }
+          let taskPrompts = []
+          tasks.forEach((task) => {
+            const taskPrompt = {
+              title: task.title,
             }
-            updateTasks(tasks)
-          }
+            taskPrompts.push(taskPrompt)
+          })
+
+          prompts(
+            {
+              type: "select",
+              name: "task",
+              message: "Choose a task to update:",
+              choices: taskPrompts,
+            },
+            { onCancel: () => {} }
+          ).then((selectResponse) => {
+            if (selectResponse) {
+              // prompt for Task Title
+              prompts(taskQuestions).then((renameResponse) => {
+                updateTask(tasks[selectResponse.task]._id, {
+                  title: renameResponse.title,
+                  is_completed: tasks[selectResponse.task].is_completed,
+                })
+              })
+            }
+          })
         })
-      })
+        break
+      case options.remove:
+        Tasks.find({}).exec(function (err, tasks) {
+          if (err) {
+            console.log(err)
+          }
+
+          let taskPrompts = []
+          tasks.forEach((task) => {
+            const taskPrompt = {
+              title: task.title,
+            }
+            taskPrompts.push(taskPrompt)
+          })
+
+          prompts(
+            {
+              type: "select",
+              name: "task",
+              message: "Choose a task to remove:",
+              choices: taskPrompts,
+            },
+            { onCancel: () => {} }
+          ).then((selectResponse) => {
+            if (selectResponse) {
+              // prompt for Task Title
+              removeTask(tasks[selectResponse.task]._id)
+            }
+          })
+        })
+        break
+      case options.clear:
+        clearTasks()
+        break
+      case options.list:
+        listTasks()
+        break
+      default:
+        Tasks.find({}).exec(function (err, tasks) {
+          if (err) {
+            console.log(err)
+          }
+          let taskPrompts = []
+          tasks.forEach((task) => {
+            const taskPrompt = {
+              title: task.title,
+              selected: task.is_completed,
+            }
+            taskPrompts.push(taskPrompt)
+          })
+
+          prompts(
+            {
+              type: "multiselect",
+              name: "tasks",
+              message: "Done:",
+              choices: taskPrompts,
+            },
+            { onCancel: () => {} }
+          ).then((response) => {
+            if (response.tasks) {
+              for (let index = 0; index < tasks.length; index++) {
+                if (response.tasks.includes(index)) {
+                  tasks[index].is_completed = true
+                } else {
+                  tasks[index].is_completed = false
+                }
+              }
+              updateTasks(tasks)
+            }
+          })
+        })
+        break
     }
   })
 
