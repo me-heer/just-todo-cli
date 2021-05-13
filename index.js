@@ -4,16 +4,9 @@ var Datastore = require("nedb")
 var Tasks = new Datastore({ filename: "./tasks.db", autoload: true })
 
 const program = require("commander")
-//const { prompt } = require("inquirer")
 const prompts = require("prompts")
 
 const chalk = require("chalk")
-const SuppressWarnings = require("suppress-warnings")
-
-SuppressWarnings([
-  (warning, name, ctor) => name.code.toString() === "MONGODB DRIVER",
-])
-
 const addTask = (task) => {
   Tasks.insert(task, function (err, result) {
     if (err) {
@@ -89,17 +82,6 @@ const updateTasks = async (tasks) => {
   })
 }
 
-module.exports = {
-  addTask,
-  findTask,
-  updateTask,
-  removeTask,
-  listTasks,
-  getTasks,
-  updateTasks,
-  clearTasks,
-}
-
 // Task Questions
 const taskQuestions = [
   {
@@ -109,7 +91,7 @@ const taskQuestions = [
   },
 ]
 
-program.version("1.0.0").description("To-Do List CLI")
+program.version("0.1.0").description("To-Do List CLI")
 
 program
   .arguments("[task]")

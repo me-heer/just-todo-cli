@@ -1,3 +1,6 @@
-{"title":"How's You","is_completed":false,"_id":"3KAPFe5O6rqMqkMs"}
-{"title":"Hello","is_completed":false,"_id":"TnlPT4XpV7zLJzzQ"}
-{"$$deleted":true,"_id":"TnlPT4XpV7zLJzzQ"}
+{"title":"How's You","is_completed":true,"_id":"3KAPFe5O6rqMqkMs"}
+{"title":"Hi","is_completed":true,"_id":"FAYrWDlMHg2IWdqK"}
+{"title":"This is Mihir","is_completed":true,"_id":"vEmuNUhGiWdTqlgo"}
+{"$$deleted":true,"_id":"3KAPFe5O6rqMqkMs"}
+{"$$deleted":true,"_id":"FAYrWDlMHg2IWdqK"}
+{"$$deleted":true,"_id":"vEmuNUhGiWdTqlgo"}

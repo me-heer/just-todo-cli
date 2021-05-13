@@ -1,8 +1,11 @@
 {
   "name": "todo-cli",
   "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/mformihir/todo-cli"
+  },
   "engines": {
-    "node": "16.0.0"
+    "node": "12.16.1"
   },
   "description": "Simple. Minimal. To-Do CLI.",
   "main": "index.js",
@@ -15,15 +18,9 @@
     "todo": "./index.js"
   },
   "dependencies": {
-    "async": "^3.2.0",
     "chalk": "^4.1.1",
     "commander": "^7.2.0",
-    "inquirer": "^8.0.0",
-    "mongodb": "^3.6.6",
-    "mongojs": "^3.1.0",
-    "mongoose": "^5.12.8",
     "nedb": "^1.8.0",
-    "prompts": "https://github.com/mformihir/prompts/tarball/master",
-    "suppress-warnings": "^1.0.2"
+    "prompts": "https://github.com/mformihir/prompts/tarball/master"
   }
 }
