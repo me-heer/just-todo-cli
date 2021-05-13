@@ -1,6 +1,12 @@
-const mongoose = require("mongoose")
-const { MongoClient } = require("mongodb")
-var async = require("async")
+#!/usr/bin/env node
+
+var Datastore = require("nedb")
+var Tasks = new Datastore({ filename: "./tasks.db", autoload: true })
+
+const program = require("commander")
+//const { prompt } = require("inquirer")
+const prompts = require("prompts")
+
 const chalk = require("chalk")
 const SuppressWarnings = require("suppress-warnings")
 
@@ -8,97 +14,79 @@ SuppressWarnings([
   (warning, name, ctor) => name.code.toString() === "MONGODB DRIVER",
 ])
 
-mongoose.Promise = global.Promise
-
-var mongoDB = "mongodb://localhost:27017/todo_cli"
-mongoose.connect(mongoDB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-mongoose.set("bufferCommands", true)
-
-var db = mongoose.connection
-
-db.on("error", console.error.bind(console, "MongoDB Connection Error: "))
-
-const Task = require("./models/tasks")
-
 const addTask = (task) => {
-  Task.create(task, function (err, result) {
+  Tasks.insert(task, function (err, result) {
     if (err) {
       console.log(err)
     }
     console.info("New Task Created")
-    db.close()
   })
 }
 
 const findTask = (name) => {
   const search = new RegExp(name, "i")
-  Task.find({ title: search }).exec((err, tasks) => {
+
+  Tasks.find({ title: search }, function (err, tasks) {
     if (err) {
       console.log(err)
     }
+
+    console.log(`Found ${tasks.length} matches:`)
+
     tasks.forEach((task) => {
-      console.info(task.title)
+      console.log(task.title)
     })
-    console.info(`${tasks.length} matches`)
-    db.close()
   })
 }
 
 const updateTask = (_id, task) => {
-  Task.updateOne({ _id }, task).then((task) => {
-    console.info("Task updated")
-    db.close()
+  Tasks.update({ _id }, task, { upsert: false, multi: false }, (err) => {
+    console.log("Task updated")
   })
 }
 
 const removeTask = (_id) => {
-  Task.remove({ _id }).then((Task) => {
-    console.info("Task removed")
-    db.close()
+  Tasks.remove({ _id: _id }, (err) => {
+    if (err) {
+      console.log(err)
+    }
+    console.log("Task removed")
   })
 }
 
 const listTasks = () => {
   console.log(chalk.bold.gray("Your tasks: "))
-  Task.find().then((tasks) => {
-    tasks.forEach((task) => console.log("- " + task.title))
-    db.close()
+
+  Tasks.find({}).exec(function (err, tasks) {
+    tasks.forEach((task) => console.log(`- ${task.title}`))
   })
 }
 
 const getTasks = () => {
-  let myTasks = Task.find().then((tasks) => {
-    db.close()
+  let myTasks = Tasks.find({}, (tasks) => {
     return tasks
   })
   return myTasks
 }
 
 const clearTasks = () => {
-  Task.deleteMany({}).then((result) => {
-    console.log(`Successfully cleared ${result.deletedCount} tasks`)
-    db.close()
+  Tasks.remove({}, { multi: true }, function (err, numDeleted) {
+    if (err) {
+      console.log(err)
+    }
+
+    console.log(`Deleted ${numDeleted} tasks`)
   })
 }
 
 const updateTasks = async (tasks) => {
-  const client = new MongoClient(mongoDB)
-  await client.connect()
-
-  await tasks.forEach(async (task) => {
-    const result = await client
-      .db("todo_cli")
-      .collection("tasks")
-      .updateOne(
-        { _id: task._id },
-        { $set: { is_completed: task.is_completed } }
-      )
+  tasks.forEach((task) => {
+    Tasks.update({ _id: task._id }, task, {}, (err) => {
+      if (err) {
+        console.log(err)
+      }
+    })
   })
-
-  client.close()
 }
 
 module.exports = {
@@ -111,3 +99,139 @@ module.exports = {
   updateTasks,
   clearTasks,
 }
+
+// Task Questions
+const taskQuestions = [
+  {
+    type: "text",
+    name: "title",
+    message: "Task: ",
+  },
+]
+
+program.version("1.0.0").description("To-Do List CLI")
+
+program
+  .arguments("[task]")
+  .option("-l, --list", "List all tasks")
+  .option("-a, --add", "Add task")
+  .option("-f, --find [task]", "Find/Search a task")
+  .option("-u, --update", "Update a task")
+  .option("-r, --remove", "Remove a task")
+  .option("-c, --clear", "Clear all tasks")
+  .addHelpCommand("help", "show assistance")
+  .action((task, options) => {
+    if (task) {
+      addTask({ title: task.toString(), is_completed: false })
+    } else if (options.add) {
+      prompts(taskQuestions).then((response) => {
+        addTask({ title: response.title, is_completed: false })
+      })
+    } else if (options.find) {
+      findTask(options.find)
+    } else if (options.update) {
+      Tasks.find({}).exec(function (err, tasks) {
+        if (err) {
+          console.log(err)
+        }
+
+        let taskPrompts = []
+        tasks.forEach((task) => {
+          const taskPrompt = {
+            title: task.title,
+          }
+          taskPrompts.push(taskPrompt)
+        })
+
+        prompts(
+          {
+            type: "select",
+            name: "task",
+            message: "Choose a task to update:",
+            choices: taskPrompts,
+          },
+          { onCancel: () => {} }
+        ).then((selectResponse) => {
+          if (selectResponse) {
+            // prompt for Task Title
+            prompts(taskQuestions).then((renameResponse) => {
+              updateTask(tasks[selectResponse.task]._id, {
+                title: renameResponse.title,
+                is_completed: tasks[selectResponse.task].is_completed,
+              })
+            })
+          }
+        })
+      })
+    } else if (options.remove) {
+      Tasks.find({}).exec(function (err, tasks) {
+        if (err) {
+          console.log(err)
+        }
+
+        let taskPrompts = []
+        tasks.forEach((task) => {
+          const taskPrompt = {
+            title: task.title,
+          }
+          taskPrompts.push(taskPrompt)
+        })
+
+        prompts(
+          {
+            type: "select",
+            name: "task",
+            message: "Choose a task to remove:",
+            choices: taskPrompts,
+          },
+          { onCancel: () => {} }
+        ).then((selectResponse) => {
+          if (selectResponse) {
+            // prompt for Task Title
+            removeTask(tasks[selectResponse.task]._id)
+          }
+        })
+      })
+    } else if (options.clear) {
+      clearTasks()
+    } else if (options.list) {
+      listTasks()
+    } else {
+      Tasks.find({}).exec(function (err, tasks) {
+        if (err) {
+          console.log(err)
+        }
+        let taskPrompts = []
+        tasks.forEach((task) => {
+          const taskPrompt = {
+            title: task.title,
+            selected: task.is_completed,
+          }
+          taskPrompts.push(taskPrompt)
+        })
+
+        prompts(
+          {
+            type: "multiselect",
+            name: "tasks",
+            message: "Done:",
+            choices: taskPrompts,
+          },
+          { onCancel: () => {} }
+        ).then((response) => {
+          if (response.tasks) {
+            for (let index = 0; index < tasks.length; index++) {
+              if (response.tasks.includes(index)) {
+                tasks[index].is_completed = true
+              } else {
+                tasks[index].is_completed = false
+              }
+            }
+            updateTasks(tasks)
+          }
+        })
+      })
+    }
+  })
+
+program.parse(process.argv)
