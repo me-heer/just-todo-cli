@@ -1,6 +1,4 @@
-{"title":"Hi","is_completed":true,"_id":"4y2sGH9RYxWn4lHN"}
-{"title":"Task","is_completed":true,"_id":"MZ9r6eyDVimpAf0R"}
-{"title":"This is a task","is_completed":true,"_id":"qcP5JtXF3EkIx1xv"}
-{"title":"Hi","is_completed":false,"_id":"4y2sGH9RYxWn4lHN"}
-{"title":"Task","is_completed":false,"_id":"MZ9r6eyDVimpAf0R"}
-{"title":"This is a task","is_completed":false,"_id":"qcP5JtXF3EkIx1xv"}
+{"title":"That's it!","is_completed":false,"_id":"H2wMN1GO8dwTNO9T"}
+{"title":"npm install -g .","is_completed":false,"_id":"Kcp6eA7KopdlG9Hy"}
+{"title":"Install NodeJS","is_completed":false,"_id":"YSTbl6Z1bVGLoeqm"}
+{"title":"npm install","is_completed":false,"_id":"yy6waYQSsw7uIhl9"}

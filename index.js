@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 
+var dbFile = "./tasks.db"
+
 var Datastore = require("nedb")
-var Tasks = new Datastore({ filename: "./tasks.db", autoload: true })
+var Tasks = new Datastore({ filename: dbFile, autoload: true })
 
 const program = require("commander")
 const prompts = require("prompts")
+const fs = require("fs")
 
-const chalk = require("chalk")
+const kleur = require("kleur")
+
 const addTask = (task) => {
   Tasks.insert(task, function (err, result) {
     if (err) {
@@ -48,9 +52,15 @@ const removeTask = (_id) => {
 }
 
 const listTasks = () => {
-  console.log(chalk.bold.gray("Your tasks: "))
-
   Tasks.find({}).exec(function (err, tasks) {
+    if (tasks.length == 0) {
+      console.log("You currently have no tasks.")
+      console.log("Create a task using: todo [task]")
+      console.log('e.g.: todo "Get groceries"')
+      return
+    }
+
+    console.log(kleur.blue().bold().underline("Your tasks: "))
     tasks.forEach((task) => console.log(`- ${task.title}`))
   })
 }
@@ -82,6 +92,15 @@ const updateTasks = async (tasks) => {
   })
 }
 
+const resetDb = () => {
+  fs.unlink(dbFile, (err) => {
+    if (err) {
+      throw err
+    }
+    console.log("Reset complete.")
+  })
+}
+
 // Task Questions
 const taskQuestions = [
   {
@@ -101,7 +120,7 @@ program
   .option("-u, --update", "Update a task")
   .option("-r, --remove", "Remove a task")
   .option("-c, --clear", "Clear all tasks")
-  .addHelpCommand("help", "show assistance")
+  .addHelpCommand("help", "Display help")
   .action((task, options) => {
     switch (true) {
       case task != undefined:
@@ -189,6 +208,12 @@ program
         break
       default:
         Tasks.find({}).exec(function (err, tasks) {
+          if (tasks.length == 0) {
+            console.log("You currently have no tasks.")
+            console.log("Create a task using: todo [task]")
+            console.log('e.g.: todo "Get groceries"')
+            return
+          }
           if (err) {
             console.log(err)
           }
@@ -226,4 +251,8 @@ program
     }
   })
 
+program
+  .command("reset")
+  .description("Reset the ToDo CLI Database")
+  .action(() => resetDb())
 program.parse(process.argv)
