@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 // Tasks Schema
 const taskSchema = mongoose.Schema({
   title: { type: String },
-  due_date: Date,
+  created_on: Date,
   is_completed: Boolean,
 })
 

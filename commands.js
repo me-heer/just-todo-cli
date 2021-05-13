@@ -30,6 +30,7 @@ program
   .option("-l, --list", "List all tasks")
   .option("-a, --add", "Add task")
   .option("-f, --find [task]", "Find/Search a task")
+  .option("-u, --update", "Update a task")
   .option("-c, --clear", "Clear all tasks")
   .addHelpCommand("help", "show assistance")
   .action(
@@ -42,8 +43,11 @@ program
         })
       } else if (options.find) {
         findTask(options.find)
+      } else if (options.update) {
       } else if (options.clear) {
         clearTasks()
+      } else if (options.list) {
+        listTasks()
       } else {
         getTasks().then((tasks) => {
           let taskPrompts = []
@@ -55,20 +59,25 @@ program
             taskPrompts.push(taskPrompt)
           })
 
-          prompts({
-            type: "multiselect",
-            name: "tasks",
-            message: "Done:",
-            choices: taskPrompts,
-          }).then((response) => {
-            for (let index = 0; index < tasks.length; index++) {
-              if (response.tasks.includes(index)) {
-                tasks[index].is_completed = true
-              } else {
-                tasks[index].is_completed = false
+          prompts(
+            {
+              type: "multiselect",
+              name: "tasks",
+              message: "Done:",
+              choices: taskPrompts,
+            },
+            { onCancel: () => {} }
+          ).then((response) => {
+            if (response.tasks) {
+              for (let index = 0; index < tasks.length; index++) {
+                if (response.tasks.includes(index)) {
+                  tasks[index].is_completed = true
+                } else {
+                  tasks[index].is_completed = false
+                }
               }
+              updateTasks(tasks)
             }
-            updateTasks(tasks)
           })
         })
       }

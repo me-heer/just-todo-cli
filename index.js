@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const { MongoClient } = require("mongodb")
 var async = require("async")
+const chalk = require("chalk")
 const SuppressWarnings = require("suppress-warnings")
 
 SuppressWarnings([
@@ -61,9 +62,9 @@ const removeTask = (_id) => {
 }
 
 const listTasks = () => {
-  Task.find().then((Tasks) => {
-    console.info(Tasks)
-    console.info(`${Tasks.length} Tasks`)
+  console.log(chalk.bold.gray("Your tasks: "))
+  Task.find().then((tasks) => {
+    tasks.forEach((task) => console.log("- " + task.title))
     db.close()
   })
 }
