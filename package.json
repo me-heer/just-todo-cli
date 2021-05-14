@@ -1,8 +1,8 @@
 {
-  "name": "todo-cli",
-  "version": "0.1.0",
+  "name": "just-todo-cli",
+  "version": "1.0.0",
   "repository": {
-    "url": "https://github.com/mformihir/todo-cli"
+    "url": "https://github.com/mformihir/just-todo-cli"
   },
   "engines": {
     "node": ">=12.16.1"
@@ -13,7 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mihir Joshi",
-  "license": "ISC",
+  "license": "MIT",
   "bin": {
     "todo": "./index.js"
   },
