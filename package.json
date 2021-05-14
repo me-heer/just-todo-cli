@@ -21,7 +21,7 @@
     "commander": "^7.2.0",
     "kleur": "^3.0.3",
     "moment": "^2.29.1",
-    "nedb": "^1.8.0",
+    "nedb": "https://github.com/mformihir/nedb/tarball/master",
     "prompts": "https://github.com/mformihir/prompts/tarball/master"
   }
 }
