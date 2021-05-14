@@ -13,6 +13,7 @@ Simple. Minimal. To-Do. CLI.
 
     npm install -g just-todo-cli
 
+**Note:** Installing the CLI will create 2 files (tasks.db, userSettings.db) to store data, I would suggest running the above command inside a folder.
 That's it. Just open the terminal/cmd and type in: `todo`
 
 ## Commands
