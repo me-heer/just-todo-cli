@@ -2,6 +2,8 @@
 
 Simple. Minimal. To-Do. CLI.
 
+![todo-cli](todo-cli.png)
+
 Requirements:
 
 - Install NodeJS (<https://nodejs.org/en/>)

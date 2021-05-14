@@ -138,8 +138,9 @@ program
           prompts({
             type: "multiselect",
             name: "tasks",
-            message: "Done:",
+            message: "Your tasks:",
             choices: taskPrompts,
+            instructions: false,
           }).then((response) => {
             if (response.tasks) {
               for (let index = 0; index < tasks.length; index++) {
