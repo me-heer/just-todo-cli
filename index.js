@@ -2,6 +2,7 @@
 
 const program = require("commander")
 const prompts = require("prompts")
+const moment = require("moment")
 
 const {
   addTask,
@@ -12,8 +13,8 @@ const {
   listTasks,
   reset,
   loadUserSettings,
-  saveUserSettings,
   initializeUser,
+  makeTaskPrompts,
 } = require("./tasks")
 
 // Task Questions
@@ -60,13 +61,7 @@ program
         break
       case options.update:
         getTasks().then(function (tasks) {
-          let taskPrompts = []
-          tasks.forEach((task) => {
-            const taskPrompt = {
-              title: task.title,
-            }
-            taskPrompts.push(taskPrompt)
-          })
+          const taskPrompts = makeTaskPrompts(tasks)
 
           prompts({
             type: "select",
@@ -97,13 +92,8 @@ program
             console.info('e.g.: todo "Get groceries"')
             return
           }
-          let taskPrompts = []
-          tasks.forEach((task) => {
-            const taskPrompt = {
-              title: task.title,
-            }
-            taskPrompts.push(taskPrompt)
-          })
+
+          const taskPrompts = makeTaskPrompts(tasks)
 
           prompts({
             type: "select",
@@ -136,14 +126,8 @@ program
               console.log('e.g.: todo "Get groceries"')
               return
             }
-            let taskPrompts = []
-            tasks.forEach((task) => {
-              const taskPrompt = {
-                title: task.title,
-                selected: task.is_completed,
-              }
-              taskPrompts.push(taskPrompt)
-            })
+
+            const taskPrompts = makeTaskPrompts(tasks)
 
             prompts({
               type: "multiselect",
@@ -166,7 +150,6 @@ program
             })
           }
         )
-
         break
     }
   })

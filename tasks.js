@@ -137,6 +137,22 @@ const getTasks = () => {
   })
 }
 
+const makeTaskPrompts = (tasks) => {
+  let taskPrompts = []
+  tasks.forEach((task) => {
+    const taskPrompt = {
+      title:
+        task.title +
+        " (" +
+        moment(new Date(task.created_on)).format("h:mm A - Do MMMM YYYY") +
+        ")",
+      selected: task.is_completed,
+    }
+    taskPrompts.push(taskPrompt)
+  })
+  return taskPrompts
+}
+
 module.exports = {
   addTask,
   updateTask,
@@ -148,4 +164,5 @@ module.exports = {
   saveUserSettings,
   loadUserSettings,
   initializeUser,
+  makeTaskPrompts,
 }
