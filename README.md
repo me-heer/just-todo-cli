@@ -9,12 +9,9 @@ Simple. Minimal. To-Do. CLI.
 
 - Install NodeJS (<https://nodejs.org/en/>)
 
-Run the following commands:
+### Installation:
 
-    git clone https://github.com/mformihir/todo-cli.git
-    cd todo-cli
-    npm install
-    npm install -g .
+    npm install -g just-todo-cli
 
 That's it. Just open the terminal/cmd and type in: `todo`
 
