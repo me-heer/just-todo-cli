@@ -11,6 +11,9 @@ const {
   updateTasks,
   listTasks,
   reset,
+  loadUserSettings,
+  saveUserSettings,
+  initializeUser,
 } = require("./tasks")
 
 // Task Questions
@@ -119,41 +122,51 @@ program
         listTasks()
         break
       default:
-        getTasks().then((tasks) => {
-          if (tasks.length == 0) {
-            console.log("You currently have no tasks.")
-            console.log("Create a task using: todo [task]")
-            console.log('e.g.: todo "Get groceries"')
-            return
-          }
-          let taskPrompts = []
-          tasks.forEach((task) => {
-            const taskPrompt = {
-              title: task.title,
-              selected: task.is_completed,
-            }
-            taskPrompts.push(taskPrompt)
-          })
+        const getTasksPromise = getTasks()
+        const getUserSettingsPromise = loadUserSettings()
 
-          prompts({
-            type: "multiselect",
-            name: "tasks",
-            message: "Your tasks:",
-            choices: taskPrompts,
-            instructions: false,
-          }).then((response) => {
-            if (response.tasks) {
-              for (let index = 0; index < tasks.length; index++) {
-                if (response.tasks.includes(index)) {
-                  tasks[index].is_completed = true
-                } else {
-                  tasks[index].is_completed = false
-                }
-              }
-              updateTasks(tasks)
+        Promise.allSettled([getTasksPromise, getUserSettingsPromise]).then(
+          (results) => {
+            tasks = results[0].value
+            userSettings = results[1].value
+
+            if (tasks.length == 0) {
+              console.log("You currently have no tasks.")
+              console.log("Create a task using: todo [task]")
+              console.log('e.g.: todo "Get groceries"')
+              return
             }
-          })
-        })
+            let taskPrompts = []
+            tasks.forEach((task) => {
+              const taskPrompt = {
+                title: task.title,
+                selected: task.is_completed,
+              }
+              taskPrompts.push(taskPrompt)
+            })
+
+            prompts({
+              type: "multiselect",
+              name: "tasks",
+              message: "Your tasks:",
+              choices: taskPrompts,
+              instructions: !userSettings,
+            }).then((response) => {
+              if (response.tasks) {
+                for (let index = 0; index < tasks.length; index++) {
+                  if (response.tasks.includes(index)) {
+                    tasks[index].is_completed = true
+                  } else {
+                    tasks[index].is_completed = false
+                  }
+                }
+                updateTasks(tasks)
+                if (!userSettings) initializeUser()
+              }
+            })
+          }
+        )
+
         break
     }
   })

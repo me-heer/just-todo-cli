@@ -1,2 +1,7 @@
 node_modules
 .vscode/*
+.idea/jsLibraryMappings.xml
+.idea/modules.xml
+.idea/todo-cli.iml
+.idea/vcs.xml
+.idea/.gitignore
