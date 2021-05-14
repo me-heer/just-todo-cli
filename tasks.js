@@ -35,38 +35,42 @@ const removeTask = (_id) => {
 }
 
 const listTasks = () => {
-  Tasks.find({}).exec(function (err, tasks) {
-    if (tasks.length == 0) {
-      console.info("You currently have no tasks.")
-      console.info("Create a task using: todo [task]")
-      console.info('e.g.: todo "Get groceries"')
-      return
-    }
+  Tasks.find({})
+    .sort({ created_on: 1 })
+    .exec(function (err, tasks) {
+      if (tasks.length == 0) {
+        console.info("You currently have no tasks.")
+        console.info("Create a task using: todo [task]")
+        console.info('e.g.: todo "Get groceries"')
+        return
+      }
 
-    console.info(kleur.blue().bold().underline("Your tasks:"))
-    tasks.forEach((task) => {
-      if (task.is_completed)
-        console.info(
-          `${kleur.green(figures.tick)} ${kleur.green(task.title)} ${kleur.gray(
-            "(" +
-              moment(new Date(task.created_on)).format(
-                "h:mm A - MMMM Do YYYY"
-              ) +
-              ")"
-          )}`
-        )
-      else
-        console.info(
-          `${figures.line} ${task.title} ${kleur.gray(
-            "(" +
-              moment(new Date(task.created_on)).format(
-                "h:mm A - MMMM Do YYYY"
-              ) +
-              ")"
-          )}`
-        )
+      console.info(kleur.blue().bold().underline("Your tasks:"))
+      tasks.forEach((task) => {
+        if (task.is_completed)
+          console.info(
+            `${kleur.green(figures.tick)} ${kleur.green(
+              task.title
+            )} ${kleur.gray(
+              "(" +
+                moment(new Date(task.created_on)).format(
+                  "h:mm A - Do MMMM YYYY"
+                ) +
+                ")"
+            )}`
+          )
+        else
+          console.info(
+            `${figures.line} ${task.title} ${kleur.gray(
+              "(" +
+                moment(new Date(task.created_on)).format(
+                  "h:mm A - Do MMMM YYYY"
+                ) +
+                ")"
+            )}`
+          )
+      })
     })
-  })
 }
 
 const updateTasks = async (tasks) => {
@@ -90,12 +94,14 @@ const reset = () => {
 
 const getTasks = () => {
   return new Promise(function (resolve, reject) {
-    Tasks.find({}).exec((err, tasks) => {
-      if (err) {
-        console.log(err)
-      }
-      resolve(tasks)
-    })
+    Tasks.find({})
+      .sort({ created_on: 1 })
+      .exec((err, tasks) => {
+        if (err) {
+          console.log(err)
+        }
+        resolve(tasks)
+      })
   })
 }
 

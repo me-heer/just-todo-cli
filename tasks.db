@@ -1,4 +1,4 @@
-{"title":"That's it!","is_completed":false,"_id":"H2wMN1GO8dwTNO9T"}
-{"title":"npm install -g .","is_completed":false,"_id":"Kcp6eA7KopdlG9Hy"}
-{"title":"Install NodeJS","is_completed":false,"_id":"YSTbl6Z1bVGLoeqm"}
-{"title":"npm install","is_completed":false,"_id":"yy6waYQSsw7uIhl9"}
+{"title":"npm install","is_completed":false,"created_on":"Fri May 14 2021 13:41:25 GMT+0530 (India Standard Time)","_id":"9AncTDIdQadfhAKB"}
+{"title":"npm install -g .","is_completed":false,"created_on":"Fri May 14 2021 13:41:29 GMT+0530 (India Standard Time)","_id":"BdPy0DY7ln5ddgiV"}
+{"title":"Clone the repository","is_completed":false,"created_on":"Fri May 14 2021 13:41:13 GMT+0530 (India Standard Time)","_id":"T7II2KNWsSQjVIU1"}
+{"title":"cd todo-cli","is_completed":false,"created_on":"Fri May 14 2021 13:41:21 GMT+0530 (India Standard Time)","_id":"mm1IVP5Lvw4ubUcq"}
