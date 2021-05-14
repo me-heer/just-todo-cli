@@ -2,6 +2,7 @@
 
 Simple. Minimal. To-Do. CLI.
 
+![tutorial](tutorial.gif)
 ![just-todo-cli](just-todo-cli.png)
 
 ### Requirements:
