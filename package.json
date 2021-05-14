@@ -12,6 +12,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "todo",
+    "cli",
+  ],
   "author": "Mihir Joshi",
   "license": "MIT",
   "bin": {
