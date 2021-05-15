@@ -33,3 +33,7 @@ Options:
 Commands:
   reset         Reset the ToDo CLI Database
 ```
+
+### Uninstall:
+
+    npm uninstall -g just-todo-cli
