@@ -16,7 +16,10 @@
     "todo",
     "cli"
   ],
-  "author": "Mihir Joshi",
+  "author": {
+	"name": "Mihir Joshi",
+	"email": "mihir67mj@gmail.com",
+  },
   "license": "MIT",
   "bin": {
     "todo": "./index.js"
