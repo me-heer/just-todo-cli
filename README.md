@@ -1,9 +1,11 @@
-# todo-cli
+# just-todo-cli
 
 Simple. Minimal. To-Do. CLI.
 
+Sometimes you just don't want to wait for a GUI to load up.
+
+![banner](banner.png)
 ![tutorial](tutorial.gif)
-![just-todo-cli](just-todo-cli.png)
 
 ### Requirements:
 
@@ -11,9 +13,12 @@ Simple. Minimal. To-Do. CLI.
 
 ### Installation:
 
+    mkdir todo
+    cd todo
     npm install -g just-todo-cli
 
-**Note:** Installing the CLI will create 2 files (tasks.db, userSettings.db) to store data, I would suggest running the above command inside a folder.
+**Note:** Installing the CLI will create 2 files (tasks.db, userSettings.db) to store data.
+
 That's it. Just open the terminal/cmd and type in: `todo`
 
 ## Commands
@@ -34,6 +39,6 @@ Commands:
   reset         Reset the ToDo CLI Database
 ```
 
-### Uninstall:
+### Uninstall
 
     npm uninstall -g just-todo-cli

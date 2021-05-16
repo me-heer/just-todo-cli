@@ -2,7 +2,6 @@
 
 const program = require("commander")
 const prompts = require("prompts")
-const moment = require("moment")
 
 const {
   addTask,
@@ -42,7 +41,7 @@ program
   .addHelpCommand(false)
   .action((task, options) => {
     switch (true) {
-      case task != undefined:
+      case task != undefined: // $todo "My Task"
         addTask({
           title: task.toString(),
           is_completed: false,
@@ -50,7 +49,7 @@ program
         })
         break
 
-      case options.add:
+      case options.add: // $todo -a
         prompts(taskQuestions).then((response) => {
           addTask({
             title: response.title,
@@ -59,10 +58,11 @@ program
           })
         })
         break
-      case options.update:
+      case options.update: // $todo -u
         getTasks().then(function (tasks) {
           const taskPrompts = makeTaskPrompts(tasks)
 
+          // Prompt to select a task
           prompts({
             type: "select",
             name: "task",
@@ -70,7 +70,7 @@ program
             choices: taskPrompts,
           }).then((selectResponse) => {
             if (selectResponse) {
-              // prompt for Task Title
+              // Prompt to update Task
               prompts(taskQuestions).then((renameResponse) => {
                 if (renameResponse.title) {
                   updateTask(tasks[selectResponse.task]._id, {
@@ -84,7 +84,7 @@ program
           })
         })
         break
-      case options.remove:
+      case options.remove: // $todo -r
         getTasks().then(function (tasks) {
           if (tasks.length == 0) {
             console.info("You currently have no tasks.")
@@ -108,10 +108,11 @@ program
           })
         })
         break
-      case options.list:
+      case options.list: // $todo -l
         listTasks()
         break
       default:
+        // $todo
         const getTasksPromise = getTasks()
         const getUserSettingsPromise = loadUserSettings()
 
@@ -134,7 +135,7 @@ program
               name: "tasks",
               message: "Your tasks:",
               choices: taskPrompts,
-              instructions: !userSettings,
+              instructions: !userSettings, // Show instructions for the first time,
             }).then((response) => {
               if (response.tasks) {
                 for (let index = 0; index < tasks.length; index++) {
@@ -145,6 +146,8 @@ program
                   }
                 }
                 updateTasks(tasks)
+
+                // If it's the first time, initialize user to prevent instructions to be shown from then on
                 if (!userSettings) initializeUser()
               }
             })
