@@ -39,6 +39,12 @@ Commands:
   reset         Reset the ToDo CLI Database
 ```
 
+### Why
+
+- Sometimes, I'm working, watching a tutorial and I want to add a quick task to my ToDo. I just want to open the terminal, add the task and get back to the video. This is why I made this.
+- In this case, using a GUI to add a task takes about 30-50 seconds which disrupts my workflow.
+- Because I'm good with typing things rather than clicking things.
+
 ### Uninstall
 
     npm uninstall -g just-todo-cli
