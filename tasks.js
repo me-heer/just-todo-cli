@@ -64,7 +64,7 @@ const removeTask = (_id) => {
 
 const listTasks = () => {
   Tasks.find({})
-    .sort({ created_on: 1 })
+    .sort({ is_completed: true })
     .exec(function (err, tasks) {
       if (tasks.length == 0) {
         console.info("You currently have no tasks.")
@@ -127,7 +127,7 @@ const reset = () => {
 const getTasks = () => {
   return new Promise(function (resolve, reject) {
     Tasks.find({})
-      .sort({ created_on: 1 })
+      .sort({ is_completed: true })
       .exec((err, tasks) => {
         if (err) {
           console.log(err)
